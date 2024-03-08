@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Instagram pictures</title>
+    <link href="../../style.css" rel="stylesheet">
+
+</head>
+<body onload="loadMatches()">
+<div class="topbar">
+    <ul>
+        <li><a href="../../index.html">Home</a></li>
+        <li><a href="../men/league-men.html">Ligaspiel Herren</a></li>
+        <li><a href="../men/cup-men.html">Pokalspiel Herren</a></li>
+        <li><a href="../men/friend-men.html">Testspiel Herren</a></li>
+        <li><a href="../men/kickoff-men.html">Anstoss Herren</a></li>
+        <li><a href="match-youth.html">Spieltag Kids</a></li>
+        <li><a>Ergebnis Kids</a></li>
+    </ul>
+</div>
+<div class="main-page">
+    <h1>Instagram-Beitrag erstellen</h1>
+    <h2>Ergebnisse Kids</h2>
+    <br>
+    <h3>Wähle die Spiele, dessen Ergebnisse wiedergegeben werden sollen:</h3>
+    <ul id="matchesList">
+    </ul>
+    <input onclick="send()" type="button" value="Senden">
+</div>
+<div>
+    <span id="created">
+    </span>
+</div>
+</body>
+<script>
+    let saveTemp = [];
+
+    function send() {
+        fetch('http://localhost:8080/createKidsResults', {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            headers: {'Content-Type': 'application/json',},
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify(saveTemp),
+        })
+            .then(response => response.text())
+            .then((data) => {
+                console.log(JSON.stringify(saveTemp));
+                console.log(saveTemp);
+                console.log('Success: ', data);
+                //window.location.assign(file);
+            })
+            .catch((error) => {
+                console.error('Error: ', error);
+            });
+    }
+
+    function showSaveTemp(match) {
+        document.getElementById('created').innerHTML += match.team + '; ';
+    }
+
+    function loadMatches() {
+        let inpRes, textArea, value;
+        let ownStats = null;
+        let oppStats = null;
+        document.getElementById('created').innerHTML = 'Erledigt: ';
+        fetch('http://localhost:8080/getAllKidsMatches')
+            .then((result) => result.json())
+            .then((data) => {
+                let matchList = document.getElementById('matchesList');
+                data.forEach(element => {
+                    let game = element.game;
+                    let home = "Zuhause";
+                    if (game.homeGame === false) {
+                        home = "Auswärts";
+                    }
+                    let matchData = game.team + "; " + game.date + "; " + game.matchType + "; " + game.oppName + "; " + home;
+                    let match = document.createElement('li');
+
+                    let span = document.createElement('span');
+                    span.id = game.date + game.team;
+
+                    let check = document.createElement('input');
+                    check.type = "checkbox"
+                    check.name = game.date + game.team;
+                    check.value = matchData;
+                    check.className = "checkboxes";
+                    check.addEventListener('change', function () {
+                        if (check.checked) {
+                            span.appendChild(document.createElement('br'));
+                            if (game.matchType !== "Kinderfest") {
+                                inpRes = document.createElement('input');
+                                inpRes.id = "result";
+                                inpRes.type = "text";
+                                span.appendChild(inpRes);
+                                span.appendChild(document.createElement('br'));
+                                if (game.matchType === "Liga") {
+                                    let tasown = document.createElement('textarea');
+                                    tasown.id = "tasown";
+                                    tasown.rows = 2;
+                                    tasown.value = "Platz  ( / :) \nTrend: --";
+                                    let tasopp = document.createElement('textarea');
+                                    tasopp.id = "tasopp";
+                                    tasopp.rows = 2;
+                                    tasopp.value = "Platz  ( / :) \nTrend: --";
+                                    span.appendChild(tasown);
+                                    span.appendChild(tasopp);
+                                    ownStats = tasown.value;
+                                    oppStats = tasopp.value;
+                                }
+                                textArea = document.createElement('textarea');
+                                textArea.maxLength = 70;
+                                textArea.cols = 40;
+                                textArea.rows = 4;
+                                span.appendChild(document.createElement('br'));
+                                span.appendChild(textArea);
+                                span.appendChild(document.createElement('br'));
+
+                            }
+                            let btSave = document.createElement('input');
+                            btSave.type = "button";
+                            btSave.value = "Speichern";
+                            btSave.addEventListener('click', function () {
+                                if (game.matchType === "Kinderfest") {
+                                    value = {
+                                        id: game,
+                                        result: null,
+                                        ownStats: null,
+                                        oppStats: null,
+                                        text: "Kinderfestival!"
+                                    };
+                                } else {
+                                    value = {
+                                        id: game,
+                                        result: inpRes.value,
+                                        ownStats: ownStats,
+                                        oppStats: oppStats,
+                                        text: textArea.value
+                                    };
+                                }
+                                if (saveTemp.length > 0) {
+                                    for (let i = 0; i < saveTemp.length; i++) {
+                                        if (saveTemp[i].id === value.id) {
+                                            saveTemp.splice(i, 1);
+                                        }
+                                    }
+                                }
+                                saveTemp.push(value);
+                                showSaveTemp(game);
+                            });
+                            span.appendChild(btSave);
+                            let btCancel = document.createElement('input');
+                            btCancel.type = "button";
+                            btCancel.value = "Absagen";
+                            btCancel.addEventListener('click', function () {
+                                value = {id: game, result: null, ownStats: null, oppStats: null, text: "Abgesagt"};
+                                if (saveTemp.length > 0) {
+                                    for (let i = 0; i < saveTemp.length; i++) {
+                                        if (saveTemp[i].id === value.id) {
+                                            saveTemp.splice(i, 1);
+                                        }
+                                    }
+                                }
+                                saveTemp.push(value);
+                                showSaveTemp(game)
+                            });
+                            span.appendChild(btCancel);
+
+                        } else {
+                            span.textContent = "";
+                        }
+                    });
+
+                    match.append(check);
+                    match.append(matchData);
+                    match.append(span);
+
+                    matchList.append(match);
+                });
+            });
+    }
+</script>
+</html>

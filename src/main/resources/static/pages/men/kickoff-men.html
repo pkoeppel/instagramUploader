@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Instagram pictures</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+
+    <script src="../../js/sendData.js" type="text/javascript"></script>
+    <script src="../../js/setupPages.js" type="text/javascript"></script>
+    <link href="../../style.css" rel="stylesheet">
+</head>
+<body onload="loadMenMatches()">
+<div class="topbar">
+    <ul>
+        <li><a href="../../index.html">Home</a></li>
+        <li><a href="league-men.html">Ligaspiel Herren</a></li>
+        <li><a href="cup-men.html">Pokalspiel Herren</a></li>
+        <li><a href="friend-men.html">Testspiel Herren</a></li>
+        <li><a>Anstoss Herren</a></li>
+        <li><a href="../youth/match-youth.html">Spieltag Kids</a></li>
+        <li><a href="../youth/result-youth.html">Ergebnis Kids</a></li>
+    </ul>
+</div>
+<div class="main-page">
+    <h1>Instagram-Beitrag erstellen</h1>
+    <h2>Anstoss Herren</h2>
+    <br>
+    <label for="matches"></label>
+    <select id="matches" name="matches">
+    </select>
+    <br>
+    <p>Vorgabe: Bild muss den Maßen: 1365 x 1365 Pixeln entsprechen!</p>
+    <br>
+    <label for="playerPic">Spielerbild auswählen:</label>
+    <input accept="image/*" id="playerPic" name="playerPic" onchange="checkPicture(this)" type="file">
+    <br>
+    <button onclick="sendKickoffData()">Absenden</button>
+</div>
+<script>
+    function loadMenMatches() {
+        let sel = document.getElementById("matches");
+        fetch('http://localhost:8080/getAllMenMatches')
+            .then((result) => result.json())
+            .then((data) => {
+                data.forEach(element => {
+                    let match = element.game;
+                    let type = match.matchType;
+                    let opp = match.opponent;
+                    let date = match.matchDate;
+                    let opt = document.createElement("option");
+                    opt.text = date + ", " + opp + ", " + type;
+                    opt.value = JSON.stringify(match);
+                    sel.append(opt);
+                });
+            });
+    }
+</script>
+<script src="../../js/test.js"></script>
+</body>
+</html>

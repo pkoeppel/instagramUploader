@@ -1,0 +1,210 @@
+{
+  "FSV Treuen": {
+    "fileName": "FSV_Treuen",
+    "place": "Treuen"
+  },
+  "SpG Treuener Land": {
+    "fileName": "SpG_Treuener_Land",
+    "place": "Treuen"
+  },
+  "1.FC Rodewisch": {
+    "fileName": "1.FC_Rodewisch",
+    "place": "Rodewisch"
+  },
+  "1.FC Wacker Plauen": {
+    "fileName": "1.FC_Wacker_Plauen",
+    "place": "Gerhard Bertram"
+  },
+  "BC Erlbach 1919": {
+    "fileName": "BC_Erlbach_1919",
+    "place": "Erlbach"
+  },
+  "BSV 53 Irfersgrün": {
+    "fileName": "BSV_53_Irfersgruen",
+    "place": "Irfersgrün"
+  },
+  "Elsterberger BC": {
+    "fileName": "Elsterberger_BC",
+    "place": "Elsterberg"
+  },
+  "FC Fortuna 91 Plauen": {
+    "fileName": "FC_Fortuna_91_Plauen",
+    "place": "Crieschwitzer Hang"
+  },
+  "FC Teutonia Netzschkau": {
+    "fileName": "FC_Teutonia_Netzschkau",
+    "place": "Netzschkau"
+  },
+  "FC Werda 1921": {
+    "fileName": "FC_Werda_1921",
+    "place": "Werda"
+  },
+  "FSV 1990 Klingenthal": {
+    "fileName": "FSV_1990_Klingenthal",
+    "place": "Klingenthal"
+  },
+  "FSV Bau Weischlitz": {
+    "fileName": "FSV_Bau_Weischlitz",
+    "place": "Weischlitz"
+  },
+  "FSV Ellefeld": {
+    "fileName": "FSV_Ellefeld",
+    "place": "Ellefeld"
+  },
+  "FSV Medizin Bad Elster": {
+    "fileName": "FSV_Medizin_Bad_Elster",
+    "place": "Bad Elster"
+  },
+  "PSV Plauen": {
+    "fileName": "PSV_Plauen",
+    "place": "Luisenstraße"
+  },
+  "Reichenbacher FC": {
+    "fileName": "Reichenbacher_FC",
+    "place": "am Wasserturm"
+  },
+  "SC Syrau 1919": {
+    "fileName": "SC_Syrau_1919",
+    "place": "Syrau"
+  },
+  "SG Jössnitz": {
+    "fileName": "SG_Joessnitz",
+    "place": "Jössnitz"
+  },
+  "SG Limbach": {
+    "fileName": "SG_Limbach",
+    "place": "Limbach"
+  },
+  "SG Neustadt": {
+    "fileName": "SG_Neustadt",
+    "place": "Neustadt"
+  },
+  "SG Rotschau": {
+    "fileName": "SG_Rotschau",
+    "place": "Rotschau"
+  },
+  "SG Stahlbau Plauen": {
+    "fileName": "SG_Stahlbau_Plauen",
+    "place": "Lindentempel"
+  },
+  "SG Traktor Lauterbach": {
+    "fileName": "SG_Traktor_Lauterbach",
+    "place": "Lauterbach"
+  },
+  "SG Unterlosa": {
+    "fileName": "SG_Unterlosa",
+    "place": "Unterlosa"
+  },
+  "SpG 1880 Reuth": {
+    "fileName": "SpG_1880_Reuth",
+    "place": "Reuth"
+  },
+  "SpVgg 1862 Neumark": {
+    "fileName": "SpVgg_1862_Neumark",
+    "place": "Neumark"
+  },
+  "SpVgg Grünbach-Falkenstein": {
+    "fileName": "SpVgg_Gruenbach-Falkenstein",
+    "place": "Falkenstein"
+  },
+  "SpVgg Zobes": {
+    "fileName": "SpVgg_Zobes",
+    "place": "Zobes"
+  },
+  "SV 08 Wildenau": {
+    "fileName": "SV_08_Wildenau",
+    "place": "Wildenau"
+  },
+  "SV 1903 Kottengrün": {
+    "fileName": "SV_1903_Kottengruen",
+    "place": "Kottengrün"
+  },
+  "SV Blau-Weiss Rebesgrün": {
+    "fileName": "SV_Blau-Weiss_Rebesgruen",
+    "place": "Rebesgrün"
+  },
+  "SV Concordia Plauen": {
+    "fileName": "SV_Concordia_Plauen",
+    "place": "Hegelstraße"
+  },
+  "SV Coschütz": {
+    "fileName": "SV_Coschuetz",
+    "place": "Coschütz"
+  },
+  "SV Eintracht Auerbach": {
+    "fileName": "SV_Eintracht_Auerbach",
+    "place": "Falkensteiner Str. AE"
+  },
+  "SV Grün-Weiss Wernesgrün": {
+    "fileName": "SV_Gruen-Weiss_Wernesgruen",
+    "place": "Wernesgrün"
+  },
+  "SV Londa Rothenkirchen": {
+    "fileName": "SV_Londa_Rothenkirchen",
+    "place": "Rothenkirchen"
+  },
+  "SV Merkur 06 Oelsnitz": {
+    "fileName": "SV_Merkur_06_Oelsnitz",
+    "place": "Elstertalstadion"
+  },
+  "SV Morgenröthe-Rautenkranz": {
+    "fileName": "SV_Morgenroethe-Rautenkranz",
+    "place": "M-Rautenkranz"
+  },
+  "SV Turbine Bergen": {
+    "fileName": "SV_Turbine_Bergen",
+    "place": "Bergen"
+  },
+  "TSG Ruppertsgrün": {
+    "fileName": "TSG_Ruppertsgruen",
+    "place": "Ruppertsgrün"
+  },
+  "TSV Trieb 1887": {
+    "fileName": "TSV_Trieb_1887",
+    "place": "Trieb"
+  },
+  "VfB Auerbach 1906": {
+    "fileName": "VfB_Auerbach_1906",
+    "place": "Beerheide"
+  },
+  "VfB Großfriesen": {
+    "fileName": "VfB_Grossfriesen",
+    "place": "Großfriesen"
+  },
+  "VfB Lengenfeld 1908": {
+    "fileName": "VfB_Lengenfeld_1908",
+    "place": "Lengenfeld"
+  },
+  "VfB Nord Plauen": {
+    "fileName": "VfB_Nord_Plauen",
+    "place": "H.-Sachs-Straße"
+  },
+  "VfB Pausa-Mühltroff": {
+    "fileName": "VfB_Pausa-Muehltroff",
+    "place": "Mühltroff"
+  },
+  "VfB Schöneck": {
+    "fileName": "VfB_Schoeneck",
+    "place": "Schöneck"
+  },
+  "VFC Adorf": {
+    "fileName": "VFC_Adorf",
+    "place": "Adorf"
+  },
+  "VFC Plauen": {
+    "fileName": "VFC_Plauen",
+    "place": "Nach dem Stadion"
+  },
+  "VFC Reichenbach 96": {
+    "fileName": "VFC_Reichenbach_96",
+    "place": "Schöne Aussicht"
+  },
+  "VfL Reumtengrün": {
+    "fileName": "VfL_Reumtengruen",
+    "place": "Reumtengrün"
+  },
+  "VSC Mylau-Reichenbach": {
+    "fileName": "VSC_Mylau-Reichenbach",
+    "place": "Reichbacherstraße"
+  }
+}
