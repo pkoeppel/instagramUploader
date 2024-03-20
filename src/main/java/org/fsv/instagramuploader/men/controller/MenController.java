@@ -1,24 +1,34 @@
 package org.fsv.instagramuploader.men.controller;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.fsv.instagramuploader.men.pictureCreator.KickoffCreator;
 import org.fsv.instagramuploader.men.pictureCreator.MatchdayCreator;
-import org.fsv.instagramuploader.model.KickoffModel;
+import org.fsv.instagramuploader.men.pictureCreator.ResultCreator;
 import org.fsv.instagramuploader.model.MatchModel;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.*;
+import org.springframework.util.StreamUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @RestController
 public class MenController {
@@ -27,23 +37,58 @@ public class MenController {
 	MatchdayCreator mc;
 	final
 	KickoffCreator kc;
+	ResultCreator rc;
 	
-	public MenController(MatchdayCreator mc, KickoffCreator kc) {
+	public MenController(MatchdayCreator mc, KickoffCreator kc, ResultCreator rc) {
 		this.mc = mc;
 		this.kc = kc;
+		this.rc = rc;
 	}
 	
-	@RequestMapping("/createLeagueMatchFile")
-	public ResponseEntity<File> createLeagueMatchFile(@RequestBody MatchModel match)
+	
+	@GetMapping(value = "/zip-download/{dir}", produces = "application/zip")
+	public void zipDownload(@PathVariable String dir, HttpServletResponse res) throws IOException {
+		File directory = new File( "save/" + dir + "/Bilder/");
+		ZipOutputStream zipOS = new ZipOutputStream(res.getOutputStream());
+		for (String fn : Objects.requireNonNull(directory.list())){
+			FileSystemResource fsRes = new FileSystemResource("save/" + dir + "/Bilder/" + fn);
+			ZipEntry zip = new ZipEntry(Objects.requireNonNull(fsRes.getFilename()));
+			zip.setSize(fsRes.contentLength());
+			zipOS.putNextEntry(zip);
+			StreamUtils.copy(fsRes.getInputStream(), zipOS);
+			zipOS.closeEntry();
+		}
+		zipOS.finish();
+		zipOS.close();
+		res.setStatus(HttpServletResponse.SC_OK);
+		res.addHeader(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment()
+										.filename("download.zip", StandardCharsets.UTF_8)
+										.build()
+										.toString());
+	}
+	
+	@GetMapping("/download/{pathName}/{fileName:.+}")
+	public ResponseEntity<?> downloadLocalFile(@PathVariable String pathName, @PathVariable String fileName) throws MalformedURLException {
+		Path path = Paths.get("save/" + pathName + "/" + fileName);
+		Resource res = new UrlResource(path.toUri());
+		return ResponseEntity.ok()
+										.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + res.getFilename() + "\"")
+										.contentType(MediaType.parseMediaType("application/octet-stream"))
+										.body(res);
+	}
+	
+	@RequestMapping("/createMatchMen")
+	public ResponseEntity<String> createMatchFile(@RequestBody MatchModel match)
 									throws IOException, ParseException {
-		File result = mc.createMatch(match);
+		String result = mc.createMatch(match);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
-	@RequestMapping("/createCupMatchFile")
-	public ResponseEntity<File> createCupMatchFile(@RequestBody MatchModel match)
+	@RequestMapping("/createKickoffMen")
+	public ResponseEntity<String> createKickoffFile(@RequestParam("match") String match, @RequestParam("file") MultipartFile playerPic, @RequestParam("coords") String coords)
 									throws IOException, ParseException {
-		File result = mc.createMatch(match);
+		JSONParser jp = new JSONParser();
+		String result = kc.createKickoff(match, playerPic, (JSONObject) jp.parse(coords));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -59,24 +104,25 @@ public class MenController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
-	@RequestMapping("/createFriendMatchFile")
-	public ResponseEntity<File> createFriendMatchFile(@RequestBody MatchModel match)
-									throws IOException, ParseException {
-		File result = mc.createMatch(match);
-		return new ResponseEntity<>(result, HttpStatus.OK);
-	}
-	
-	@RequestMapping("/createKickoffFile")
-	public ResponseEntity<File> createKickoffFile(@RequestBody KickoffModel model)
-									throws IOException, ParseException {
-		File result = kc.createKickoff(model);
-		return new ResponseEntity<>(result, HttpStatus.OK);
-	}
-	
 	@RequestMapping("/getAllMenMatches")
-	public ResponseEntity<JSONArray> getAllMenMatches() throws IOException, ParseException {
+	public ResponseEntity<JSONArray> getAllMenMatches(@RequestBody String target) throws IOException, ParseException {
 		JSONArray arr = (JSONArray) new JSONParser()
-										.parse(new FileReader("src\\main\\resources\\templates\\men-games.json"));
+										.parse(new FileReader("src\\main\\resources\\templates\\men-games-"+ target + ".json"));
 		return new ResponseEntity<>(arr, HttpStatus.OK);
+	}
+	
+	@RequestMapping("/sendMenMatchResult")
+	public ResponseEntity<?> sendMenMatchResult(@RequestBody String match) throws ParseException, IOException {
+		JSONParser jp = new JSONParser();
+		JSONObject result = rc.addLogos((JSONObject) jp.parse(match));
+		rc = new ResultCreator();
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+	
+	@RequestMapping("/sendMenMatchPicture")
+	public ResponseEntity<HttpStatus> sendMenMatchPicure(@RequestParam("coords") String coords, @RequestParam("file") MultipartFile file) throws ParseException, IOException {
+		JSONParser jp = new JSONParser();
+		rc.savePicture((JSONObject) jp.parse(coords), file);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

@@ -49,7 +49,7 @@ public record MatchModel(String team, String matchType, String matchDay, String 
 			case "leagueMatch" -> "Liga";
 			case "cupMatch" -> "Pokal";
 			case "friendMatch" -> "Testspiel";
-			case "kidsMatch" -> "Kinderfest";
+			case "youthMatch" -> "Kinderfest";
 			default -> matchType;
 		};
 	}

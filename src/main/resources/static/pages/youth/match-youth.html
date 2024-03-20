@@ -20,6 +20,7 @@
         <li><a href="../men/cup-men.html">Pokalspiel Herren</a></li>
         <li><a href="../men/friend-men.html">Testspiel Herren</a></li>
         <li><a href="../men/kickoff-men.html">Anstoss Herren</a></li>
+        <li><a href="../men/result-men.html">Ergebnis Herren</a></li>
         <li><a>Spieltag Kids</a></li>
         <li><a href="result-youth.html">Ergebnis Kids</a></li>
     </ul>
@@ -44,7 +45,7 @@
             <label for="matchType"></label><select id="matchType" name="matchType" onchange="changedType(this.value)">
             <option value="leagueMatch">Ligaspiel</option>
             <option value="cupMatch">Pokalspiel</option>
-            <option value="kidsMatch">Kinderfestival</option>
+            <option value="youthMatch">Kinderfestival</option>
         </select>
             <br>
             <label id="lbHomeGame"><input id="homeGame" name="homeGame" onclick="changeHome(this)" type="checkbox">Heimspiel</label>
@@ -65,7 +66,7 @@
             <input id="save" onclick="saveTemp()" type="button" value="Speichern">
         </fieldset>
     </form>
-    <input onclick="sendKidsMatchday()" type="button" value="Ausgabe">
+    <input onclick="sendYouthMatchday()" type="button" value="Ausgabe">
 </div>
 <div>
     <span id="createdTeams">
@@ -73,6 +74,32 @@
 </div>
 <script>
     let matchData = [];
+
+    function sendYouthMatchday() {
+        fetch('http://localhost:8080/createMatchFilesYouth', {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            headers: {'Content-Type': 'application/json',},
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify(matchData),
+        })
+            .then(response => response.json())
+            .then((data) => {
+                for(let [key, value] of Object.entries(data)){
+                    for (let i = 1; i<=value; i++){
+                        window.open('http://localhost:8080/download/youth/' + key + '/Matchday' + i + '.jpeg');
+                    }
+                }
+                console.log(data);
+            })
+            .catch((error) => {
+                console.error('Error: ', error);
+            });
+
+    }
 
     function saveTemp() {
         if (checkInputs()) {

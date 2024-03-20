@@ -5,11 +5,12 @@
 
 .homeButton {
     padding: 5px;
-    font-size: 11px;
+    font-size: 15px;
     margin-left: auto;
     margin-right: auto;
     display: block;
     width: 40%;
+    height: 40px;
 }
 
 .topbar {
@@ -30,7 +31,7 @@
 .topbar li {
     border-right: 1px solid gray;
     float: left;
-    padding: 2px 2px;
+    padding: 5px 3px;
 }
 
 .topbar li a {
@@ -38,7 +39,7 @@
     color: black;
     text-align: center;
     text-decoration: none;
-    font-size: 60%;
+    font-size: 90%;
 }
 
 .topbar li a:hover {
@@ -47,7 +48,8 @@
 
 #widget1 {
     position: fixed;
-    height: 90%;
+    height: 100%;
+    width: 100%;
     margin-top: 5px;
     overflow: inherit;
 }
@@ -120,4 +122,9 @@ option {
 
 .matchTypeSelect {
     visibility: hidden;
+}
+
+.select2-container{
+    width: 150px !important;
+    font-size: 11px;
 }

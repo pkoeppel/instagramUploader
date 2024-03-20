@@ -5,8 +5,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -28,6 +30,10 @@ public class Helper {
 		backY = background.getHeight();
 	}
 	
+	public static int getC(JSONObject c, String val) {
+		double coord = (double) c.get(val);
+		return Double.valueOf(coord).intValue();
+	}
 	public static String wrapString(String string, int charWrap) {
 		int lastBreak = 0;
 		int nextBreak = charWrap;
@@ -97,6 +103,18 @@ public class Helper {
 				sizeY = 310;
 				posX = 310;
 				posY = 1097;
+			}
+			case "bigClubResult-men" -> {
+				sizeX = 180;
+				sizeY = 180;
+				posX = 5;
+				posY = 5;
+			}
+			case "smallClubResult-men" -> {
+				sizeX = 115;
+				sizeY = 115;
+				posX = 105;
+				posY = 90;
 			}
 			case "playerPic-men" -> {
 				sizeX = 670;
@@ -182,15 +200,21 @@ public class Helper {
 	}
 	
 	public String createMatchdaysHead(List<LocalDate> md) {
-		LocalDate nextWed = md.get(0).with(TemporalAdjusters.next(DayOfWeek.WEDNESDAY));
-		LocalDate lastThu = md.get(0).with(TemporalAdjusters.previous(DayOfWeek.THURSDAY));
+		LocalDate lastThu = md.get(0);
+		if (!lastThu.getDayOfWeek().equals(DayOfWeek.THURSDAY)){
+			lastThu = lastThu.with(TemporalAdjusters.previous(DayOfWeek.THURSDAY));
+		}
+		LocalDate nextWed = md.get(md.size() - 1);
+		if (!nextWed.getDayOfWeek().equals(DayOfWeek.WEDNESDAY)){
+			nextWed = nextWed.with(TemporalAdjusters.next(DayOfWeek.WEDNESDAY));
+		}
 		String headDay;
 		if (nextWed.getYear() == lastThu.getYear()) {
 			headDay = lastThu.format(DateTimeFormatter.ofPattern("dd.MM.")) + " - " + nextWed.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 		} else {
 			headDay = lastThu.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + " - " + nextWed.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
 		}
-		writeOnPicture(headDay, "head", FontClass.headKids1, Color.BLACK, 0);
+		writeOnPicture(headDay, "head", FontClass.headYouth1, Color.BLACK, 0);
 		return lastThu.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 	}
 	
@@ -232,4 +256,20 @@ public class Helper {
 			ja.add(game);
 		}
 	}
+	public JSONObject parser(String match) throws ParseException {
+		JSONParser jp = new JSONParser();
+		return (JSONObject) jp.parse(match);
+	}
+	
+	public File savePicture(String pathURL, BufferedImage img, String fileName) throws IOException {
+		File dir = new File(pathURL);
+		if (!dir.exists()) {
+			//noinspection ResultOfMethodCallIgnored
+			dir.mkdir();
+		}
+		File fileToSafe = new File(dir + "\\" + fileName + ".jpeg");
+		ImageIO.write(img, "jpeg", fileToSafe);
+		return fileToSafe;
+	}
+	
 }

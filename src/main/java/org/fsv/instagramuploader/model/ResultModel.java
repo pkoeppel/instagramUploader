@@ -12,7 +12,7 @@ public record ResultModel(JSONObject id, String result, String ownStats, String 
 		return switch (getValue("matchType")) {
 			case "leagueMatch" -> "(Liga)";
 			case "cupMatch" -> "(Pokal)";
-			case "kidsMatch" -> "(Kinderfest)";
+			case "youthMatch" -> "(Kinderfest)";
 			default -> getValue("matchType");
 		};
 	}

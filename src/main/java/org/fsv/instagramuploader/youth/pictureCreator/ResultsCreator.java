@@ -5,6 +5,7 @@ import org.fsv.instagramuploader.FontClass;
 import org.fsv.instagramuploader.Helper;
 import org.fsv.instagramuploader.model.ClubModel;
 import org.fsv.instagramuploader.model.ResultModel;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Component;
 
@@ -21,20 +22,21 @@ import java.util.List;
 
 @Component("rsc")
 public class ResultsCreator {
-	private static BufferedImage background;
 	private List<LocalDate> matchDates;
 	
-	public File createResults(ArrayList<ResultModel> rmArr) throws IOException, ParseException {
-		background = ImageIO.read(new File("src\\main\\resources\\pictures\\template\\youth\\resultTemp.jpg"));
+	public JSONObject createResults(ArrayList<ResultModel> rmArr) throws IOException, ParseException {
+		BufferedImage background = ImageIO.read(new File("src\\main\\resources\\pictures\\template\\youth\\resultTemp.jpg"));
 		matchDates = new ArrayList<>();
 		Helper h = new Helper(background);
 		int blockStart = 500;
 		int pageCount = 1;
+		ArrayList<File> newFiles = new ArrayList<>();
+		String caption = "";
 		for (ResultModel rm : rmArr) {
 			if (blockStart > 1100) {
 				blockStart = 530;
 				String savePathPart = h.createMatchdaysHead(matchDates);
-				savePicture(savePathPart, pageCount);
+				newFiles.add(h.savePicture("save\\youth\\" + savePathPart, background, "Result" + pageCount));
 				background = ImageIO.read(new File("src\\main\\resources\\pictures\\template\\youth\\resultTemp.jpg"));
 				h = new Helper(background);
 				pageCount++;
@@ -46,9 +48,9 @@ public class ResultsCreator {
 			int[] polyY = {blockStart, blockStart, blockStart + 100, blockStart + 100};
 			g.fillPolygon(polyX, polyY, polyY.length);
 			
-			h.writeOnPicture(rm.getValue("team"), "team-name", FontClass.teamKids, Color.BLACK, blockStart);
+			h.writeOnPicture(rm.getValue("team"), "team-name", FontClass.teamYouth, Color.BLACK, blockStart);
 			
-			h.writeOnPicture("(" + rm.getMatchType() + ")", "match-type-short", FontClass.simpleKids, Color.BLACK, blockStart);
+			h.writeOnPicture("(" + rm.getMatchType() + ")", "match-type-short", FontClass.simpleYouth, Color.BLACK, blockStart);
 			
 			checkMatchDate(rm.getValue("date"));
 			
@@ -58,11 +60,11 @@ public class ResultsCreator {
 			if (rm.text().equals("Abgesagt")) {
 				h.pictureOnPicture(ownClub.clubLogo(), "logo-left-youth", blockStart);
 				h.pictureOnPicture(oppClub.clubLogo(), "logo-right-youth", blockStart);
-				h.writeOnPicture("Abgesagt!", "center-point", FontClass.clubOwnKids, Color.BLACK, blockStart);
+				h.writeOnPicture("Abgesagt!", "center-point", FontClass.clubOwnYouth, Color.BLACK, blockStart);
 			} else {
 				if (rm.getValue("matchType").equals("Kinderfest")) {
 					h.pictureOnPicture(ownClub.clubLogo(), "logo-left-youth", blockStart);
-					h.writeOnPicture("Kinderfest!", "center-point", FontClass.clubOwnKids, Color.BLACK, blockStart);
+					h.writeOnPicture("Kinderfest!", "center-point", FontClass.clubOwnYouth, Color.BLACK, blockStart);
 				} else {
 					String ownTeamText = "SpG Treuener Land";
 					String oppTeamText = Helper.wrapString(rm.getValue("oppName"), 23);
@@ -71,34 +73,30 @@ public class ResultsCreator {
 						oppTeamText += "\n" + rm.oppStats();
 					}
 					if (Boolean.parseBoolean(rm.getValue("homeGame"))) {
-						h.writeOnPicture(ownTeamText, "club-name-home", FontClass.simpleKids, Color.BLACK, blockStart);
-						h.writeOnPicture(oppTeamText, "club-name-away", FontClass.simpleKids, Color.BLACK, blockStart);
+						h.writeOnPicture(ownTeamText, "club-name-home", FontClass.simpleYouth, Color.BLACK, blockStart);
+						h.writeOnPicture(oppTeamText, "club-name-away", FontClass.simpleYouth, Color.BLACK, blockStart);
 						h.pictureOnPicture(ownClub.clubLogo(), "logo-left-youth", blockStart);
 						h.pictureOnPicture(oppClub.clubLogo(), "logo-right-youth", blockStart);
 					} else {
-						h.writeOnPicture(ownTeamText, "club-name-away", FontClass.simpleKids, Color.BLACK, blockStart);
-						h.writeOnPicture(oppTeamText, "club-name-home", FontClass.simpleKids, Color.BLACK, blockStart);
+						h.writeOnPicture(ownTeamText, "club-name-away", FontClass.simpleYouth, Color.BLACK, blockStart);
+						h.writeOnPicture(oppTeamText, "club-name-home", FontClass.simpleYouth, Color.BLACK, blockStart);
 						h.pictureOnPicture(oppClub.clubLogo(), "logo-left-youth", blockStart);
 						h.pictureOnPicture(ownClub.clubLogo(), "logo-right-youth", blockStart);
 					}
-					h.writeOnPicture(rm.result(), "center-point", FontClass.resultKids, Color.BLACK, blockStart);
+					h.writeOnPicture(rm.result(), "center-point", FontClass.resultYouth, Color.BLACK, blockStart);
 				}
 			}
 			blockStart += 200;
-			h.deleteTempTxt(rm.id(), "kids-games");
+			h.deleteTempTxt(rm.id(), "youth-games");
 		}
 		String savePathPart = h.createMatchdaysHead(matchDates);
-		return savePicture(savePathPart, pageCount);
-	}
-	
-	private File savePicture(String datePart, int matchCount) throws IOException {
-		File directory = new File("save\\kids\\" + datePart);
-		if (!directory.exists()) {
-			//noinspection ResultOfMethodCallIgnored
-			directory.mkdir();
-		}
-		ImageIO.write(background, "png", new File(directory + "\\" + "Result" + matchCount + ".png"));
-		return new File(directory + "\\" + "Result" + matchCount + ".png");
+		newFiles.add(h.savePicture("save\\youth\\" + savePathPart, background, "Result" + pageCount));
+		
+		JSONObject result = new JSONObject();
+		result.put("filelist", newFiles);
+		result.put("caption", caption);
+		
+		return result;
 	}
 	
 	private void checkMatchDate(String date) {

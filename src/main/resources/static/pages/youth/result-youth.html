@@ -15,6 +15,7 @@
         <li><a href="../men/cup-men.html">Pokalspiel Herren</a></li>
         <li><a href="../men/friend-men.html">Testspiel Herren</a></li>
         <li><a href="../men/kickoff-men.html">Anstoss Herren</a></li>
+        <li><a href="../men/result-men.html">Ergebnis Herren</a></li>
         <li><a href="match-youth.html">Spieltag Kids</a></li>
         <li><a>Ergebnis Kids</a></li>
     </ul>
@@ -26,18 +27,16 @@
     <h3>Wähle die Spiele, dessen Ergebnisse wiedergegeben werden sollen:</h3>
     <ul id="matchesList">
     </ul>
+    <div id="reportboxes"></div>
     <input onclick="send()" type="button" value="Senden">
 </div>
-<div>
-    <span id="created">
-    </span>
-</div>
+<div id="created"></div>
 </body>
 <script>
     let saveTemp = [];
 
     function send() {
-        fetch('http://localhost:8080/createKidsResults', {
+        fetch('http://localhost:8080/createYouthResults', {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
@@ -47,12 +46,14 @@
             referrerPolicy: 'no-referrer',
             body: JSON.stringify(saveTemp),
         })
-            .then(response => response.text())
+            .then(response => response.json())
             .then((data) => {
-                console.log(JSON.stringify(saveTemp));
-                console.log(saveTemp);
-                console.log('Success: ', data);
-                //window.location.assign(file);
+                for(let [key, value] of Object.entries(data)){
+                    for (let i = 1; i<=value; i++){
+                        window.open('http://localhost:8080/download/youth/' + key + '/Result' + i + '.jpeg');
+                    }
+                }
+                console.log(data);
             })
             .catch((error) => {
                 console.error('Error: ', error);
@@ -68,14 +69,14 @@
         let ownStats = null;
         let oppStats = null;
         document.getElementById('created').innerHTML = 'Erledigt: ';
-        fetch('http://localhost:8080/getAllKidsMatches')
+        fetch('http://localhost:8080/getAllYouthMatches')
             .then((result) => result.json())
             .then((data) => {
                 let matchList = document.getElementById('matchesList');
                 data.forEach(element => {
                     let game = element.game;
                     let home = "Zuhause";
-                    if (game.homeGame === false) {
+                    if (game.homeGame == "false") {
                         home = "Auswärts";
                     }
                     let matchData = game.team + "; " + game.date + "; " + game.matchType + "; " + game.oppName + "; " + home;
@@ -112,12 +113,6 @@
                                     ownStats = tasown.value;
                                     oppStats = tasopp.value;
                                 }
-                                textArea = document.createElement('textarea');
-                                textArea.maxLength = 70;
-                                textArea.cols = 40;
-                                textArea.rows = 4;
-                                span.appendChild(document.createElement('br'));
-                                span.appendChild(textArea);
                                 span.appendChild(document.createElement('br'));
 
                             }
@@ -130,16 +125,14 @@
                                         id: game,
                                         result: null,
                                         ownStats: null,
-                                        oppStats: null,
-                                        text: "Kinderfestival!"
+                                        oppStats: null
                                     };
                                 } else {
                                     value = {
                                         id: game,
                                         result: inpRes.value,
-                                        ownStats: ownStats,
-                                        oppStats: oppStats,
-                                        text: textArea.value
+                                        ownStats: tasown.value,
+                                        oppStats: tasopp.value
                                     };
                                 }
                                 if (saveTemp.length > 0) {
@@ -150,6 +143,21 @@
                                     }
                                 }
                                 saveTemp.push(value);
+                                let report = document.getElementById('reportboxes');
+                                let taId = "tb" + value.id.team;
+                                if (!document.getElementById(taId)){
+                                    textArea = document.createElement('textarea');
+                                    textArea.id = "tb" + value.id.team;
+                                    textArea.maxLength = 70;
+                                    textArea.cols = 40;
+                                    textArea.rows = 4;
+                                    let lb = document.createElement('label');
+                                    lb.innerHTML = value.id.team + ":";
+                                    report.appendChild(lb);
+                                    report.appendChild(document.createElement('br'));
+                                    report.appendChild(textArea);
+                                    report.appendChild(document.createElement('br'));
+                                }
                                 showSaveTemp(game);
                             });
                             span.appendChild(btSave);

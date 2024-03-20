@@ -24,7 +24,6 @@ import java.io.IOException;
 public class MatchdayCreator {
 	
 	private static Helper h;
-	private static BufferedImage image;
 	private static FileWriter fw;
 	private MatchModel match;
 	
@@ -37,10 +36,10 @@ public class MatchdayCreator {
 		}
 	}
 	
-	public File createMatch(MatchModel matchInfo) throws IOException, ParseException {
+	public String createMatch(MatchModel matchInfo) throws IOException, ParseException {
 		match = matchInfo;
 		//select template
-		image = ImageIO.read(new File("src\\main\\resources\\pictures\\template\\men\\matchdayTemp.jpg"));
+		BufferedImage image = ImageIO.read(new File("src\\main\\resources\\pictures\\template\\men\\matchdayTemp.jpg"));
 		h = new Helper(image);
 		int headCase, blockHeight, sponsorCase;
 		String matchCase = matchInfo.matchType();
@@ -71,9 +70,14 @@ public class MatchdayCreator {
 		buildHeadline(headCase);
 		buildBlocks(blockHeight);
 		buildSponsor(sponsorCase);
-		writeTempTxt(matchInfo);
+		writeTempTxt(matchInfo, "kickoff");
+		writeTempTxt(matchInfo, "result");
 		fw.close();
-		return savePicture();
+		ClubSelector getClub = new ClubSelector();
+		String saveName = getClub.getClubDetails(match.opponent()).saveClubName();
+		String savePath = match.getSaveMatchDate() + "_" + match.getMatchType() + "_" + saveName;
+		h.savePicture("save\\" + savePath, image, "Matchday");
+		return savePath;
 	}
 	
 	private void buildSponsor(Integer i) throws IOException {
@@ -136,35 +140,24 @@ public class MatchdayCreator {
 		h.writeOnPicture(bottomBox, "bottom-men", FontClass.bottomMen, Color.BLACK, 1278);
 	}
 	
-	private File savePicture() throws IOException, ParseException {
-		ClubSelector getClub = new ClubSelector();
-		String saveName = getClub.getClubDetails(match.opponent()).saveClubName();
-		File directory = new File("save\\" + match.getSaveMatchDate() + "_" + match.getMatchType() + "_" + saveName);
-		if (!directory.exists()) {
-			//noinspection ResultOfMethodCallIgnored
-			directory.mkdir();
-		}
-		ImageIO.write(image, "png", new File(directory + "\\" + "Matchday.png"));
-		return new File(directory + "\\" + "Matchday.png");
-	}
-	
 	@SuppressWarnings("unchecked")
-	private void writeTempTxt(MatchModel m) throws IOException {
+	private void writeTempTxt(MatchModel m, String part) throws IOException {
 		JSONParser jp = new JSONParser();
 		JSONArray ja = new JSONArray();
 		try {
-			ja = (JSONArray) jp.parse(new FileReader("src\\main\\resources\\templates\\men-games.json"));
+			ja = (JSONArray) jp.parse(new FileReader("src\\main\\resources\\templates\\men-games-" + part + ".json"));
 			
 			JSONObject gameDetails = new JSONObject();
 			gameDetails.put("matchType", m.getMatchType());
 			gameDetails.put("opponent", m.opponent());
 			gameDetails.put("matchDate", m.matchDate());
+			gameDetails.put("homeGame",m.homeGame());
 			h.saveTempTxt(ja, gameDetails);
 		} catch (ParseException ignored) {
 		}
 		
 		
-		fw = new FileWriter("src\\main\\resources\\templates\\men-games.json");
+		fw = new FileWriter("src\\main\\resources\\templates\\men-games-" + part + ".json");
 		fw.write(ja.toJSONString());
 		fw.flush();
 	}

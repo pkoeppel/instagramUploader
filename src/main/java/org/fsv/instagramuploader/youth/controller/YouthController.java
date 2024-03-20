@@ -5,18 +5,24 @@ import org.fsv.instagramuploader.model.ResultModel;
 import org.fsv.instagramuploader.youth.pictureCreator.MatchdaysCreator;
 import org.fsv.instagramuploader.youth.pictureCreator.ResultsCreator;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Map;
 
 @RestController
 public class YouthController {
@@ -28,22 +34,32 @@ public class YouthController {
 		this.rsc = rsc;
 	}
 	
-	@RequestMapping("/createMatchFilesKids")
-	public ResponseEntity<File> createMatchFilesKids(@RequestBody ArrayList<MatchModel> mmArr) throws IOException, ParseException {
-		File result = msc.createMatches(mmArr);
+	@GetMapping("/download/youth/{pathName}/{fileName:.+}")
+	public ResponseEntity<?> downloadLocalFile(@PathVariable String pathName, @PathVariable String fileName) throws MalformedURLException {
+		Path path = Paths.get("save/youth/" + pathName + "/" + fileName);
+		Resource res = new UrlResource(path.toUri());
+		return ResponseEntity.ok()
+										.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + res.getFilename() + "\"")
+										.contentType(MediaType.parseMediaType("application/octet-stream"))
+										.body(res);
+	}
+	
+	@RequestMapping("/createMatchFilesYouth")
+	public ResponseEntity<?> createMatchFilesYouth(@RequestBody ArrayList<MatchModel> mmArr) throws IOException, ParseException {
+		Map<String, Integer> result = msc.createMatches(mmArr);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
-	@RequestMapping("/getAllKidsMatches")
-	public ResponseEntity<JSONArray> getAllKidsMatches() throws IOException, ParseException {
+	@RequestMapping("/getAllYouthMatches")
+	public ResponseEntity<JSONArray> getAllYouthMatches() throws IOException, ParseException {
 		JSONArray arr = (JSONArray) new JSONParser()
-										.parse(new FileReader("src\\main\\resources\\templates\\kids-games.json"));
+										.parse(new FileReader("src\\main\\resources\\templates\\youth-games.json"));
 		return new ResponseEntity<>(arr, HttpStatus.OK);
 	}
 	
-	@RequestMapping("/createKidsResults")
-	public ResponseEntity<File> createKidsResult(@RequestBody ArrayList<ResultModel> rmArr) throws IOException, ParseException {
-		File result = rsc.createResults(rmArr);
+	@RequestMapping("/createYouthResults")
+	public ResponseEntity<JSONObject> createYouthResult(@RequestBody ArrayList<ResultModel> rmArr) throws IOException, ParseException {
+		JSONObject result = rsc.createResults(rmArr);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 }

@@ -4,10 +4,10 @@ import org.fsv.instagramuploader.ClubSelector;
 import org.fsv.instagramuploader.FontClass;
 import org.fsv.instagramuploader.Helper;
 import org.fsv.instagramuploader.model.ClubModel;
-import org.fsv.instagramuploader.model.KickoffModel;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -19,10 +19,11 @@ import java.time.format.DateTimeFormatter;
 
 @Component("kc")
 public class KickoffCreator {
-	public File createKickoff(KickoffModel model) throws IOException, ParseException {
+	public String createKickoff(String match, MultipartFile file, JSONObject c) throws IOException, ParseException {
 		BufferedImage image = ImageIO.read(new File("src\\main\\resources\\pictures\\template\\men\\kickoffTemp.jpg"));
 		Helper h = new Helper(image);
-		JSONObject m = model.getMatch();
+		JSONObject m = h.parser(match);
+		
 		String mType = m.get("matchType").toString();
 		String mOpp = m.get("opponent").toString();
 		String mDate = m.get("matchDate").toString();
@@ -43,31 +44,28 @@ public class KickoffCreator {
 		h.pictureOnPicture(oppClub.clubLogo(), "smallClub-men", 0);
 		h.pictureOnPicture(ownClub.clubLogo(), "bigClub-men", 0);
 		
-		BufferedImage formattedImage = chanceFormat(ImageIO.read(new File("buffer\\" + model.playerPic())));
+		BufferedImage formattedImage = chanceFormat(c, ImageIO.read(file.getInputStream()));
 		h.pictureOnPicture(formattedImage, "playerPic-men", 0);
 		
 		String saveName = getClub.getClubDetails(mOpp).saveClubName();
-		File directory = new File("save\\" + date + "_" + mType + "_" + saveName);
-		if (!directory.exists()) {
-			//noinspection ResultOfMethodCallIgnored
-			directory.mkdir();
-		}
-		ImageIO.write(image, "png", new File(directory + "\\" + "Kickoff.png"));
-		h.deleteTempTxt(m, "men-games");
-		return new File(directory + "\\" + "Kickoff.png");
 		
+		String savePath = date + "_" + mType + "_" + saveName;
+		h.savePicture("save\\" + savePath, image, "Kickoff");
+		h.deleteTempTxt(m, "men-games-kickoff");
+		return savePath;
 	}
 	
-	private BufferedImage chanceFormat(BufferedImage input) {
-		BufferedImage output = new BufferedImage(670, 670, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2 = output.createGraphics();
+	private BufferedImage chanceFormat(JSONObject c, BufferedImage image) {
+		BufferedImage targetImg = new BufferedImage(670, 670, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage subImg = image.getSubimage(Helper.getC(c, "x"), Helper.getC(c, "y"), Helper.getC(c, "w"), Helper.getC(c, "h"));
+		Graphics2D g2 = targetImg.createGraphics();
 		RenderingHints qualityHints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		qualityHints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		g2.setRenderingHints(qualityHints);
 		g2.setClip(new RoundRectangle2D.Double(0, 0, 670, 670, 670, 670));
-		g2.drawImage(input, 0, 0, 670, 670, null);
+		g2.drawImage(subImg, 0, 0, 670, 670, null);
 		g2.dispose();
-		return output;
+		return targetImg;
 	}
 	
 }

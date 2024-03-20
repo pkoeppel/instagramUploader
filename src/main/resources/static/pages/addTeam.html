@@ -14,11 +14,10 @@
     <label for="clubName">Klubname</label>
     <input id="clubName" name="clubName" type="text">
     <br>
-    <input accept="image/*" id="myFile" name="fileName" onchange="createNewTeam(this, 'picture')" type="file">
+    <input accept="image/*" id="clubPic" name="fileName" onchange="createNewTeam(this, 'picture')" type="file">
     <br>
     <div>
         <img alt="Team logo" id="picture" src="#">
-
     </div>
     <canvas>
 
@@ -26,8 +25,9 @@
     <button onclick="createNewTeam()">Absenden</button>
 </div>
 <script>
-    function createNewTeam(source, target) {
-        let file = source.files[0];
+    function createNewTeam() {
+        let file = document.getElementById('clubPic').files[0];
+
         let reader = new FileReader();
 
         reader.readAsDataURL(file);
