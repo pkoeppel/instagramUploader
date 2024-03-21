@@ -96,7 +96,7 @@ public class MenController {
 	public ResponseEntity<ArrayList<String>> getAllTeams() throws IOException, ParseException {
 		ArrayList<String> result = new ArrayList<>();
 		JSONObject obj = (JSONObject) new JSONParser()
-										.parse(new FileReader("src\\main\\resources\\templates\\clubs.json"));
+										.parse(new FileReader("src/main/resources/templates/clubs.json"));
 		for (Object key : obj.keySet()) {
 			result.add(key.toString());
 		}
@@ -107,7 +107,7 @@ public class MenController {
 	@RequestMapping("/getAllMenMatches")
 	public ResponseEntity<JSONArray> getAllMenMatches(@RequestBody String target) throws IOException, ParseException {
 		JSONArray arr = (JSONArray) new JSONParser()
-										.parse(new FileReader("src\\main\\resources\\templates\\men-games-"+ target + ".json"));
+										.parse(new FileReader("src/main/resources/templates/men-games-"+ target + ".json"));
 		return new ResponseEntity<>(arr, HttpStatus.OK);
 	}
 	

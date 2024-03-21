@@ -57,7 +57,7 @@ public class ResultCreator {
 		String saveName = getClub.getClubDetails(mOpp).saveClubName();
 		int imgCount = 0;
 		String dir = date + "_" + mType + "_" + saveName;
-		File directory = new File("save\\" + dir + "\\Bilder");
+		File directory = new File("save/" + dir + "/Bilder");
 		if (!directory.exists()) {
 			//noinspection ResultOfMethodCallIgnored
 			directory.mkdir();
@@ -66,7 +66,7 @@ public class ResultCreator {
 			h = new Helper(img);
 			h.pictureOnPicture(oppClub.clubLogo(), "smallClubResult-men", 0);
 			h.pictureOnPicture(ownClub.clubLogo(), "bigClubResult-men", 0);
-			File fileToSave = new File(directory + "\\" + "Pic" + imgCount + ".jpeg");
+			File fileToSave = new File(directory + "/" + "Pic" + imgCount + ".jpeg");
 			ImageIO.write(img, "jpeg",fileToSave);
 			imgCount++;
 		}

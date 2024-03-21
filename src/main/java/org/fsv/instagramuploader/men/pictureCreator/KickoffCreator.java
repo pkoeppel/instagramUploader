@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter;
 @Component("kc")
 public class KickoffCreator {
 	public String createKickoff(String match, MultipartFile file, JSONObject c) throws IOException, ParseException {
-		BufferedImage image = ImageIO.read(new File("src\\main\\resources\\pictures\\template\\men\\kickoffTemp.jpg"));
+		BufferedImage image = ImageIO.read(new File("src/main/resources/pictures/template/men/kickoffTemp.jpg"));
 		Helper h = new Helper(image);
 		JSONObject m = h.parser(match);
 		
@@ -50,7 +50,7 @@ public class KickoffCreator {
 		String saveName = getClub.getClubDetails(mOpp).saveClubName();
 		
 		String savePath = date + "_" + mType + "_" + saveName;
-		h.savePicture("save\\" + savePath, image, "Kickoff");
+		h.savePicture("save/" + savePath, image, "Kickoff");
 		h.deleteTempTxt(m, "men-games-kickoff");
 		return savePath;
 	}

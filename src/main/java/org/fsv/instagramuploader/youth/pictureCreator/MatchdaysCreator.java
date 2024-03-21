@@ -29,7 +29,7 @@ public class MatchdaysCreator {
 	private static ClubSelector getClub;
 	private static FileWriter fw;
 	private List<LocalDate> matchDates;
-	private static final String tmpURL = "src\\main\\resources\\pictures\\template\\youth\\matchdayTemp.jpg";
+	private static final String tmpURL = "src/main/resources/pictures/template/youth/matchdayTemp.jpg";
 	
 	public Map<String, Integer> createMatches(ArrayList<MatchModel> mmArr) throws IOException, ParseException {
 		matchDates = new ArrayList<>();
@@ -43,7 +43,7 @@ public class MatchdaysCreator {
 				blockStart = 530;
 				String savePathPart = h.createMatchdaysHead(matchDates);
 				String fileName = "Matchday" + pageCount;
-				h.savePicture("save\\youth\\" + savePathPart, background, fileName);
+				h.savePicture("save/youth/" + savePathPart, background, fileName);
 				background = ImageIO.read(new File(tmpURL));
 				h = new Helper(background);
 				pageCount++;
@@ -65,7 +65,7 @@ public class MatchdaysCreator {
 		String savePathPart = h.createMatchdaysHead(matchDates);
 		fw.close();
 		String fileName = "Matchday" + pageCount;
-		h.savePicture("save\\youth\\" + savePathPart, background, fileName);
+		h.savePicture("save/youth/" + savePathPart, background, fileName);
 		
 		Map<String, Integer> result = new HashMap<>();
 		result.put(savePathPart, pageCount);
@@ -77,7 +77,7 @@ public class MatchdaysCreator {
 		JSONParser jp = new JSONParser();
 		JSONArray ja = new JSONArray();
 		try {
-			ja = (JSONArray) jp.parse(new FileReader("src\\main\\resources\\templates\\youth-games.json"));
+			ja = (JSONArray) jp.parse(new FileReader("src/main/resources/templates/youth-games.json"));
 			
 			JSONObject gameDetails = new JSONObject();
 			gameDetails.put("team", m.team());
@@ -91,7 +91,7 @@ public class MatchdaysCreator {
 		}
 		
 		
-		fw = new FileWriter("src\\main\\resources\\templates\\youth-games.json");
+		fw = new FileWriter("src/main/resources/templates/youth-games.json");
 		fw.write(ja.toJSONString());
 		fw.flush();
 	}

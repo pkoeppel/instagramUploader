@@ -23,7 +23,7 @@ public class ResultsCreator {
 	private List<LocalDate> matchDates;
 	
 	public Map<String, Integer> createResults(ArrayList<ResultModel> rmArr) throws IOException, ParseException {
-		BufferedImage background = ImageIO.read(new File("src\\main\\resources\\pictures\\template\\youth\\resultTemp.jpg"));
+		BufferedImage background = ImageIO.read(new File("src/main/resources/pictures/template/youth/resultTemp.jpg"));
 		matchDates = new ArrayList<>();
 		Helper h = new Helper(background);
 		int blockStart = 500;
@@ -32,8 +32,8 @@ public class ResultsCreator {
 			if (blockStart > 1100) {
 				blockStart = 500;
 				String savePathPart = h.createMatchdaysHead(matchDates);
-				h.savePicture("save\\youth\\" + savePathPart, background, "Result" + pageCount);
-				background = ImageIO.read(new File("src\\main\\resources\\pictures\\template\\youth\\resultTemp.jpg"));
+				h.savePicture("save/youth/" + savePathPart, background, "Result" + pageCount);
+				background = ImageIO.read(new File("src/main/resources/pictures/template/youth/resultTemp.jpg"));
 				h = new Helper(background);
 				pageCount++;
 			}
@@ -86,7 +86,7 @@ public class ResultsCreator {
 			h.deleteTempTxt(rm.id(), "youth-games");
 		}
 		String savePathPart = h.createMatchdaysHead(matchDates);
-		h.savePicture("save\\youth\\" + savePathPart, background, "Result" + pageCount);
+		h.savePicture("save/youth/" + savePathPart, background, "Result" + pageCount);
 		
 		Map<String, Integer> result = new HashMap<>();
 		result.put(savePathPart, pageCount);

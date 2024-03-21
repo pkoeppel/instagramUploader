@@ -39,7 +39,7 @@ public class MatchdayCreator {
 	public String createMatch(MatchModel matchInfo) throws IOException, ParseException {
 		match = matchInfo;
 		//select template
-		BufferedImage image = ImageIO.read(new File("src\\main\\resources\\pictures\\template\\men\\matchdayTemp.jpg"));
+		BufferedImage image = ImageIO.read(new File("src/main/resources/pictures/template/men/matchdayTemp.jpg"));
 		h = new Helper(image);
 		int headCase, blockHeight, sponsorCase;
 		String matchCase = matchInfo.matchType();
@@ -76,14 +76,14 @@ public class MatchdayCreator {
 		ClubSelector getClub = new ClubSelector();
 		String saveName = getClub.getClubDetails(match.opponent()).saveClubName();
 		String savePath = match.getSaveMatchDate() + "_" + match.getMatchType() + "_" + saveName;
-		h.savePicture("save\\" + savePath, image, "Matchday");
+		h.savePicture("save/" + savePath, image, "Matchday");
 		return savePath;
 	}
 	
 	private void buildSponsor(Integer i) throws IOException {
 		BufferedImage sponsor = switch (i) {
-			case 1 -> ImageIO.read(new File("src\\main\\resources\\pictures\\sponsor\\sparkassevogtland.png"));
-			case 2 -> ImageIO.read(new File("src\\main\\resources\\pictures\\sponsor\\sternquell.png"));
+			case 1 -> ImageIO.read(new File("src/main/resources/pictures/sponsor/sparkassevogtland.png"));
+			case 2 -> ImageIO.read(new File("src/main/resources/pictures/sponsor/sternquell.png"));
 			default -> null;
 		};
 		h.pictureOnPicture(sponsor, "sponsor-men", 0);
@@ -145,7 +145,7 @@ public class MatchdayCreator {
 		JSONParser jp = new JSONParser();
 		JSONArray ja = new JSONArray();
 		try {
-			ja = (JSONArray) jp.parse(new FileReader("src\\main\\resources\\templates\\men-games-" + part + ".json"));
+			ja = (JSONArray) jp.parse(new FileReader("src/main/resources/templates/men-games-" + part + ".json"));
 			
 			JSONObject gameDetails = new JSONObject();
 			gameDetails.put("matchType", m.getMatchType());
@@ -157,7 +157,7 @@ public class MatchdayCreator {
 		}
 		
 		
-		fw = new FileWriter("src\\main\\resources\\templates\\men-games-" + part + ".json");
+		fw = new FileWriter("src/main/resources/templates/men-games-" + part + ".json");
 		fw.write(ja.toJSONString());
 		fw.flush();
 	}

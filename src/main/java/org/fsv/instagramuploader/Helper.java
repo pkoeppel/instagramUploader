@@ -223,7 +223,7 @@ public class Helper {
 		JSONArray ja = new JSONArray();
 		JSONObject curObj;
 		try {
-			ja = (JSONArray) jp.parse(new FileReader("src\\main\\resources\\templates\\" + file + ".json"));
+			ja = (JSONArray) jp.parse(new FileReader("src/main/resources/templates/" + file + ".json"));
 			for (int i = 0; i < ja.size(); i++) {
 				curObj = (JSONObject) ja.get(i);
 				if (curObj.get("game").equals(delMatch)) {
@@ -234,7 +234,7 @@ public class Helper {
 			ja.remove(delMatch);
 		} catch (ParseException ignored) {
 		}
-		FileWriter fw = new FileWriter("src\\main\\resources\\templates\\" + file + ".json");
+		FileWriter fw = new FileWriter("src/main/resources/templates/" + file + ".json");
 		fw.write(ja.toJSONString());
 		fw.flush();
 		fw.close();
@@ -267,7 +267,7 @@ public class Helper {
 			//noinspection ResultOfMethodCallIgnored
 			dir.mkdir();
 		}
-		File fileToSafe = new File(dir + "\\" + fileName + ".jpeg");
+		File fileToSafe = new File(dir + "/" + fileName + ".jpeg");
 		ImageIO.write(img, "jpeg", fileToSafe);
 	}
 	

@@ -52,7 +52,7 @@ public class YouthController {
 	@RequestMapping("/getAllYouthMatches")
 	public ResponseEntity<JSONArray> getAllYouthMatches() throws IOException, ParseException {
 		JSONArray arr = (JSONArray) new JSONParser()
-										.parse(new FileReader("src\\main\\resources\\templates\\youth-games.json"));
+										.parse(new FileReader("src/main/resources/templates/youth-games.json"));
 		return new ResponseEntity<>(arr, HttpStatus.OK);
 	}
 	
