@@ -79,7 +79,7 @@
                     formData.append("match", document.getElementById('matches').value);
                     formData.append("coords", JSON.stringify(coOrdinates));
                     formData.append("file", document.getElementById('playerPic').files[0]);
-                    fetch('http://localhost:8080/createKickoffMen', {
+                    fetch(window.location.origin + '/createKickoffMen', {
                         method: 'POST',
                         mode: 'cors',
                         cache: 'no-cache',
@@ -90,7 +90,7 @@
                     })
                         .then(response => response.text())
                         .then((data) => {
-                            window.open('http://localhost:8080/download/' + data + '/Kickoff.jpeg');
+                            window.open(window.location.origin + '/download/' + data + '/Kickoff.jpeg');
                         })
                         .catch((error) => {
                             console.error('Error: ', error);

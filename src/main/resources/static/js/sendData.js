@@ -14,13 +14,13 @@ let sendData = {
     oppName: null
 };
 
-function sendMatch(){
+function sendMatch() {
     sendData.opponent = document.getElementById('opponent').value;
     sendData.homeGame = document.getElementById('homeGame').checked;
     sendData.matchDate = document.getElementById('kickoffDate').value;
     sendData.matchTime = document.getElementById('kickoffTime').value;
 
-    fetch('http://localhost:8080/createMatchMen', {
+    fetch(window.location.origin + '/createMatchMen', {
         method: 'POST',
         mode: 'cors',
         cache: 'no-cache',
@@ -32,13 +32,14 @@ function sendMatch(){
     })
         .then(response => response.text())
         .then(data => {
-            window.open('http://localhost:8080/download/' + data + '/Matchday.jpeg');
+            window.open(window.location.origin + '/download/' + data + '/Matchday.jpeg');
         })
         .catch((error) => {
             console.error('Error: ', error);
         });
 
 }
+
 function sendLeagueMatch() {
     if (checkInputs()) {
         let ownPoints = document.querySelector("#pointsSelf").value;

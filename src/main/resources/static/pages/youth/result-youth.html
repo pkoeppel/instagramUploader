@@ -30,13 +30,24 @@
     <div id="reportboxes"></div>
     <input onclick="send()" type="button" value="Senden">
 </div>
+<br>
+<input type="text" id="headline">
 <div id="created"></div>
+<br>
+<div id="showReport"></div>
 </body>
 <script>
     let saveTemp = [];
 
     function send() {
-        fetch('http://localhost:8080/createYouthResults', {
+        let caption = document.getElementById(headline).value + " 🔴🟢🟡" + "\n\n";
+        let resDev = document.getElementById("reportboxes");
+        let elem = resDev.querySelectorAll("textarea");
+        for (let i = 0; i < elem.length; i++) {
+            caption += elem[i].id + ":\n" + elem[i].value + "\n\n";
+        }
+
+        fetch(window.location.origin + '/createYouthResults', {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
@@ -44,16 +55,18 @@
             headers: {'Content-Type': 'application/json',},
             redirect: 'follow',
             referrerPolicy: 'no-referrer',
-            body: JSON.stringify(saveTemp),
+            body: JSON.stringify(saveTemp)
         })
             .then(response => response.json())
             .then((data) => {
+                console.log(data);
                 for(let [key, value] of Object.entries(data)){
                     for (let i = 1; i<=value; i++){
-                        window.open('http://localhost:8080/download/youth/' + key + '/Result' + i + '.jpeg');
+                        window.open(window.location.origin + '/download/youth/' + key + '/Result' + i + '.jpeg');
                     }
                 }
-                console.log(data);
+                let repDiv = document.getElementById('showReport');
+                repDiv.innerText = caption;
             })
             .catch((error) => {
                 console.error('Error: ', error);
@@ -65,11 +78,11 @@
     }
 
     function loadMatches() {
-        let inpRes, textArea, value;
+        let inpRes, tasown, tasopp, textArea, value;
         let ownStats = null;
         let oppStats = null;
         document.getElementById('created').innerHTML = 'Erledigt: ';
-        fetch('http://localhost:8080/getAllYouthMatches')
+        fetch(window.location.origin + '/getAllYouthMatches')
             .then((result) => result.json())
             .then((data) => {
                 let matchList = document.getElementById('matchesList');
@@ -100,11 +113,11 @@
                                 span.appendChild(inpRes);
                                 span.appendChild(document.createElement('br'));
                                 if (game.matchType === "Liga") {
-                                    let tasown = document.createElement('textarea');
+                                    tasown = document.createElement('textarea');
                                     tasown.id = "tasown";
                                     tasown.rows = 2;
                                     tasown.value = "Platz  ( / :) \nTrend: --";
-                                    let tasopp = document.createElement('textarea');
+                                    tasopp = document.createElement('textarea');
                                     tasopp.id = "tasopp";
                                     tasopp.rows = 2;
                                     tasopp.value = "Platz  ( / :) \nTrend: --";
@@ -125,15 +138,31 @@
                                         id: game,
                                         result: null,
                                         ownStats: null,
-                                        oppStats: null
+                                        oppStats: null,
+                                        text: ""
                                     };
                                 } else {
                                     value = {
                                         id: game,
                                         result: inpRes.value,
                                         ownStats: tasown.value,
-                                        oppStats: tasopp.value
+                                        oppStats: tasopp.value,
+                                        text: ""
                                     };
+                                    let report = document.getElementById('reportboxes');
+                                    let taId = value.id.team;
+                                    if (!document.getElementById(taId)){
+                                        textArea = document.createElement('textarea');
+                                        textArea.id = taId;
+                                        textArea.cols = 40;
+                                        textArea.rows = 4;
+                                        let lb = document.createElement('label');
+                                        lb.innerHTML = taId + ":";
+                                        report.appendChild(lb);
+                                        report.appendChild(document.createElement('br'));
+                                        report.appendChild(textArea);
+                                        report.appendChild(document.createElement('br'));
+                                    }
                                 }
                                 if (saveTemp.length > 0) {
                                     for (let i = 0; i < saveTemp.length; i++) {
@@ -143,21 +172,6 @@
                                     }
                                 }
                                 saveTemp.push(value);
-                                let report = document.getElementById('reportboxes');
-                                let taId = "tb" + value.id.team;
-                                if (!document.getElementById(taId)){
-                                    textArea = document.createElement('textarea');
-                                    textArea.id = "tb" + value.id.team;
-                                    textArea.maxLength = 70;
-                                    textArea.cols = 40;
-                                    textArea.rows = 4;
-                                    let lb = document.createElement('label');
-                                    lb.innerHTML = value.id.team + ":";
-                                    report.appendChild(lb);
-                                    report.appendChild(document.createElement('br'));
-                                    report.appendChild(textArea);
-                                    report.appendChild(document.createElement('br'));
-                                }
                                 showSaveTemp(game);
                             });
                             span.appendChild(btSave);

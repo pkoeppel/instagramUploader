@@ -5,7 +5,6 @@ import org.fsv.instagramuploader.FontClass;
 import org.fsv.instagramuploader.Helper;
 import org.fsv.instagramuploader.model.ClubModel;
 import org.fsv.instagramuploader.model.ResultModel;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Component;
 
@@ -16,27 +15,24 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.*;
 
 @Component("rsc")
 public class ResultsCreator {
 	private List<LocalDate> matchDates;
 	
-	public JSONObject createResults(ArrayList<ResultModel> rmArr) throws IOException, ParseException {
+	public Map<String, Integer> createResults(ArrayList<ResultModel> rmArr) throws IOException, ParseException {
 		BufferedImage background = ImageIO.read(new File("src\\main\\resources\\pictures\\template\\youth\\resultTemp.jpg"));
 		matchDates = new ArrayList<>();
 		Helper h = new Helper(background);
 		int blockStart = 500;
 		int pageCount = 1;
-		ArrayList<File> newFiles = new ArrayList<>();
-		String caption = "";
 		for (ResultModel rm : rmArr) {
 			if (blockStart > 1100) {
-				blockStart = 530;
+				blockStart = 500;
 				String savePathPart = h.createMatchdaysHead(matchDates);
-				newFiles.add(h.savePicture("save\\youth\\" + savePathPart, background, "Result" + pageCount));
+				h.savePicture("save\\youth\\" + savePathPart, background, "Result" + pageCount);
 				background = ImageIO.read(new File("src\\main\\resources\\pictures\\template\\youth\\resultTemp.jpg"));
 				h = new Helper(background);
 				pageCount++;
@@ -90,11 +86,10 @@ public class ResultsCreator {
 			h.deleteTempTxt(rm.id(), "youth-games");
 		}
 		String savePathPart = h.createMatchdaysHead(matchDates);
-		newFiles.add(h.savePicture("save\\youth\\" + savePathPart, background, "Result" + pageCount));
+		h.savePicture("save\\youth\\" + savePathPart, background, "Result" + pageCount);
 		
-		JSONObject result = new JSONObject();
-		result.put("filelist", newFiles);
-		result.put("caption", caption);
+		Map<String, Integer> result = new HashMap<>();
+		result.put(savePathPart, pageCount);
 		
 		return result;
 	}

@@ -1,6 +1,6 @@
 function fillSelect() {
     let sel = document.getElementById("opponent");
-    fetch('http://localhost:8080/getAllTeams')
+    fetch(window.location.origin + '/getAllTeams')
         .then((response) => {
             return response.json();
         })
@@ -36,16 +36,6 @@ function loadPage() {
     fillDateAndTime();
 }
 
-
-
-function changedType(selectedType) {
-    if (selectedType === "youthMatch") {
-        document.getElementById("lbKickoffTime").style.visibility = "hidden";
-    } else {
-        document.getElementById("lbKickoffTime").style.visibility = "visible";
-    }
-}
-
 function changeHome(sel) {
     if (sel.checked) {
         document.getElementById("home").style.visibility = "visible";
@@ -60,7 +50,7 @@ function clearFields() {
 
 function loadMenMatches(type) {
     let sel = document.getElementById("matches");
-    let url = 'http://localhost:8080/getAllMenMatches'
+    let url = window.location.origin + '/getAllMenMatches'
     fetch(url, {
         method: 'POST',
         body: type

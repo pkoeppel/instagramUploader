@@ -170,7 +170,7 @@ public class Helper {
 					y = textSize + 45;
 				}
 				case "matchType" -> {
-					x = 842 - (fm.stringWidth(line) / 2);
+					x = 757 - (fm.stringWidth(line) / 2);
 					y = textSize + 50;
 				}
 				case "club-name-home" -> {
@@ -261,7 +261,7 @@ public class Helper {
 		return (JSONObject) jp.parse(match);
 	}
 	
-	public File savePicture(String pathURL, BufferedImage img, String fileName) throws IOException {
+	public void savePicture(String pathURL, BufferedImage img, String fileName) throws IOException {
 		File dir = new File(pathURL);
 		if (!dir.exists()) {
 			//noinspection ResultOfMethodCallIgnored
@@ -269,7 +269,6 @@ public class Helper {
 		}
 		File fileToSafe = new File(dir + "\\" + fileName + ".jpeg");
 		ImageIO.write(img, "jpeg", fileToSafe);
-		return fileToSafe;
 	}
 	
 }

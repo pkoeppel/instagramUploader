@@ -20,8 +20,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 @Component("msc")
 public class MatchdaysCreator {
@@ -131,17 +131,16 @@ public class MatchdaysCreator {
 		ClubModel club = getClub.getClubDetails("SpG Treuener Land");
 		ClubModel oppClub = getClub.getClubDetails(m.opponent());
 		h.pictureOnPicture(club.clubLogo(), "logo-left-youth", startPoint);
-		if (m.matchType() == null) {
-			h.writeOnPicture("Spielfrei!", "matchType", FontClass.mTypeYouth, Color.BLACK, startPoint);
-		} else {
-			String gamePlace = m.homePlace();
-			if (Boolean.parseBoolean(m.homeGame())) {
-				gamePlace = oppClub.clubPlace();
-			}
-			h.writeOnPicture("(" + m.getMatchType() + ")", "match-type-short", FontClass.simpleYouth, Color.BLACK, startPoint);
-			h.writeOnPicture(m.getMatchType() + " (Sportplatz " + gamePlace + ")!", "matchType", FontClass.mTypeYouth, Color.BLACK, startPoint);
-			writeTempTxt(m);
+		String gamePlace = m.homePlace();
+		if (!Boolean.parseBoolean(m.homeGame())) {
+			gamePlace = oppClub.clubPlace();
 		}
+		h.writeOnPicture("(" + m.getMatchType() + ")", "match-type-short", FontClass.simpleYouth, Color.BLACK, startPoint);
+		h.writeOnPicture(m.getMatchType() + "!", "matchType", FontClass.mTypeYouth, Color.BLACK, startPoint);
+		String bottom = m.fullMatchDate() + " - " + m.matchTime() + " Uhr" + "\n" + "Sportplatz " + gamePlace;
+		h.writeOnPicture(bottom, "bottom-center", FontClass.simpleYouth, Color.BLACK, startPoint);
+		writeTempTxt(m);
+		
 	}
 	
 	private void checkMatchDate(String date) {

@@ -42,7 +42,7 @@
                 <option value="F-Jugend 2">F2-Jugend</option>
             </select>
             </legend>
-            <label for="matchType"></label><select id="matchType" name="matchType" onchange="changedType(this.value)">
+            <label for="matchType"></label><select id="matchType" name="matchType">
             <option value="leagueMatch">Ligaspiel</option>
             <option value="cupMatch">Pokalspiel</option>
             <option value="youthMatch">Kinderfestival</option>
@@ -76,7 +76,7 @@
     let matchData = [];
 
     function sendYouthMatchday() {
-        fetch('http://localhost:8080/createMatchFilesYouth', {
+        fetch(window.location.origin + '/createMatchFilesYouth', {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
@@ -90,7 +90,7 @@
             .then((data) => {
                 for(let [key, value] of Object.entries(data)){
                     for (let i = 1; i<=value; i++){
-                        window.open('http://localhost:8080/download/youth/' + key + '/Matchday' + i + '.jpeg');
+                        window.open(window.location.origin + '/download/youth/' + key + '/Matchday' + i + '.jpeg');
                     }
                 }
                 console.log(data);

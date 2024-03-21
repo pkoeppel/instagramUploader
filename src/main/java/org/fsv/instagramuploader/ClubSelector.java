@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class ClubSelector {
 	public ClubModel getClubDetails(String club) throws IOException, ParseException {
-		String fileSource = "D:\\eclipse-workspace\\instaHelper\\src\\main\\resources\\pictures\\teams\\";
+		String fileSource = "src\\main\\resources\\pictures\\teamlogos\\";
 		JSONObject obj = (JSONObject) new JSONParser().parse(new FileReader("src\\main\\resources\\templates\\clubs.json"));
 		JSONObject objClub = (JSONObject) obj.get(club);
 		File logo = new File(fileSource + objClub.get("fileName").toString() + ".png");

@@ -5,7 +5,6 @@ import org.fsv.instagramuploader.model.ResultModel;
 import org.fsv.instagramuploader.youth.pictureCreator.MatchdaysCreator;
 import org.fsv.instagramuploader.youth.pictureCreator.ResultsCreator;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.core.io.Resource;
@@ -58,8 +57,8 @@ public class YouthController {
 	}
 	
 	@RequestMapping("/createYouthResults")
-	public ResponseEntity<JSONObject> createYouthResult(@RequestBody ArrayList<ResultModel> rmArr) throws IOException, ParseException {
-		JSONObject result = rsc.createResults(rmArr);
+	public ResponseEntity<?> createYouthResult(@RequestBody ArrayList<ResultModel> rmArr) throws IOException, ParseException {
+		Map<String, Integer> result = rsc.createResults(rmArr);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 }
