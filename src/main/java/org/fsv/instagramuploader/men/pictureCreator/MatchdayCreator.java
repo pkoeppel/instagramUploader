@@ -136,7 +136,7 @@ public class MatchdayCreator {
 		h.writeOnPicture(homeTeam, "homeclub-men", FontClass.clubMen, Color.BLACK, startBox);
 		h.writeOnPicture(guestTeam, "awayclub-men", FontClass.clubMen, Color.BLACK, startBox);
 		
-		String bottomBox = match.matchDate() + " | " + match.matchTime() + " Uhr" + "\n" + gamePlace;
+		String bottomBox = match.matchDate() + " | " + match.matchTime() + " Uhr" + "\n" + Helper.wrapString(gamePlace, 30);
 		h.writeOnPicture(bottomBox, "bottom-men", FontClass.bottomMen, Color.BLACK, 1278);
 	}
 	
